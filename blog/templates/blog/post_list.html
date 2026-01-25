@@ -1,0 +1,56 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    {% partialdef post-card %}
+        <article class="post-card">
+            <!-- The post variable comes from when we call this partial below -->
+            <h2>
+                <a href="{% url 'blog:post_detail' post.pk %}">
+                    {{ post.title }}
+                </a>
+            </h2>
+            
+            <div class="post-meta">
+                Posted by <strong>{{ post.author.username }}</strong> 
+                on {{ post.created_at|date:"F d, Y" }}
+            </div>
+            
+            <div class="post-content">
+                {{ post.content|truncatewords:30 }}
+            </div>
+            
+            <div class="post-footer">
+                <span class="likes">❤️ {{ post.likes }} likes</span>
+                <a href="{% url 'blog:post_detail' post.pk %}">Read more →</a>
+            </div>
+        </article>
+    {% endpartialdef %}
+
+    {% if posts %}
+        <div class="posts-list">
+            <!-- Loop through all posts and render each one using our partial -->
+            {% for post in posts %}
+                {% partial post-card %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No posts yet. Create some posts in the Django admin!</p>
+    {% endif %}
+
+    {% partialdef info-box %}
+        <div style="background: #e8f4f8; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <strong>{{ info_title }}</strong>
+            <p style="margin: 10px 0 0 0;">{{ info_message }}</p>
+        </div>
+    {% endpartialdef %}
+
+    <!-- Use our info-box partial by passing variables using 'with' -->
+    {% with info_title="Welcome!" info_message="This demo shows Django 6.0 template partials in action. Each post card above is rendered using a partial!" %}
+        {% partial info-box %}
+    {% endwith %}
+
+{% endblock %}

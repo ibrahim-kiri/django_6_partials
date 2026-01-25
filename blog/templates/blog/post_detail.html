@@ -1,0 +1,57 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <a href="{% url 'blog:post_list' %}" class="back-link">Back to all posts</a>
+
+    <h1>{{ post.title }}</h1>
+
+    {% partialdef full-post %}
+        <article class="post-card">
+            <div class="post-meta">
+                Written by <strong>{{ post.author.username }}</strong>
+                on {{ post.created_at|date:"F d, Y \a\t g:i A"}}
+            </div>
+
+            <div class="post-content" style="margin-top: 20px; line-height: 1.8;">
+                <!-- Show the full content (not truncated) -->
+                {{ post.content|linebreaks }}
+            </div>
+
+            <div class="post-footer">
+                <span class="likes">❤️ {{ post.likes }} likes</span>
+            </div>
+        </article>
+    {% endpartialdef %}
+
+    <!-- Use the full_post partial -->
+    {% partial full-post %}
+
+    <h2 style="margin-top: 40px; margin-bottom: 20px;">
+        Comments ({{ comments|length }})
+    </h2>
+
+    {% partialdef comment-item %}
+        <div class="comment">
+            <div class="comment-author">
+                {{ comment.author.username }}
+            </div>
+            <div class="comment-date">
+                {{ comment.created_at|date:"F d, Y \a\t g:i A" }}
+            </div>
+            <div class="comment-text">
+                {{ comment.text }}
+            </div>
+        </div>
+    {% endpartialdef %}
+
+    <!-- Use the comment_item partial for each comment -->
+    {% if comments %}
+        {% for comment in comments %}
+            {% partial comment-item %}
+        {% endfor %}
+    {% else %}
+        <p style="color: #7f8c8d;">No comments yet. Be the first to comment!</p>
+    {% endif %}
+{% endblock %}
