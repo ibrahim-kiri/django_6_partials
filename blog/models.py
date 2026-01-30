@@ -31,6 +31,6 @@ class Comment(models.Model):
     class Meta:
         ordering = ['created_at']
 
-    def __strt__(self):
+    def __str__(self):
         return f"Comment by {self.author.username} on {self.post.title}"
 
